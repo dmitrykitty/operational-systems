@@ -1,6 +1,6 @@
-# Operational Systems — Lab Notes
+# Operating Systems — Lab Notes
 
-This README is a personal study guide for the **Operational Systems** course.
+This README is a personal study guide for the **Operating Systems** course.
 It is meant to help me remember **what I built, how I built it, and which commands / concepts are worth memorizing** for labs, quizzes, and exams.
 
 # General Reference
