@@ -1,0 +1,10 @@
+Test pliku z polskimi znakami:
+Aa
+Cc
+Ee
+Ll
+Nn
+Oo
+Ss
+Zz
+Zz
