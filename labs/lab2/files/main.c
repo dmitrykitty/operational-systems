@@ -71,25 +71,48 @@ int main(int argc, char* argv[]){
     // Read from input, convert, and write to output
     //read(from, &adres_to, how_many_bytes) -> amount of readen bytes
     //1 - ok, 0 - EOF, -1 - error
-    while(read(in_file, &b1, 1) == 1) {
-        char converted = b1;
+    ssize_t n; 
+    while((n = read(in_file, &b1, 1)) == 1) {
         //ASCII [0-127]
-        if(b1 >= 128){
-            if(read(in_file, &b2, 1) != 1){
-                printf("Error occured reading second byte of polish symbol");
+        if(b1 < 128){
+            if(write(out_file, &b1, 1) != 1){
+                perror("error during writing");
                 close(in_file);
                 close(out_file);
                 return 1; 
             }
-            converted = convert_char(b1, b2); 
+        } else {
+            if(read(in_file, &b2, 1) != 1){
+                perror("error during reading second byte");
+                close(in_file); 
+                close(out_file);
+                return 1;
+            }
+            unsigned char converted = convert_char(b1, b2);       
+            if(converted == 0){
+                //it means it two or more bytes char but not polish one
+                if((write(out_file, &b1, 1) != 1) || (write(out_file, &b2, 1) != 1)){
+                    perror("error during writing two bytes of non polish char");
+                    close(in_file); 
+                    close(out_file);
+                    return 1;
+                }
+            } else {
+                if(write(out_file, &converted, 1) != 1){
+                    perror("error during writing changeg polish char");
+                    close(in_file); 
+                    close(out_file);
+                    return 1;
+                }
+            } 
         }
+    }
 
-        if(write(out_file, &converted, 1) != 1){
-            printf("Error occured writing converted symbol to file: %s", output_file);
-            close(in_file);
-            close(out_file); 
-            return 1;
-        }
+    if(n < 0){
+        perror("error during reading");
+        close(in_file);
+        close(out_file);
+        return 1; 
     }
     
     close(in_file);
